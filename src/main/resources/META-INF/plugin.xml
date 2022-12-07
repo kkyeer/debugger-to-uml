@@ -7,12 +7,12 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.github.kkyeer.debuggertouml.services.MyApplicationService"/>
-        <projectService serviceImplementation="com.github.kkyeer.debuggertouml.services.MyProjectService"/>
+<!--        <applicationService serviceImplementation="com.github.kkyeer.debuggertouml.services.MyApplicationService"/>-->
+<!--        <projectService serviceImplementation="com.github.kkyeer.debuggertouml.services.MyProjectService"/>-->
     </extensions>
 
     <applicationListeners>
-        <listener class="com.github.kkyeer.debuggertouml.listeners.MyProjectManagerListener"
-                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
+<!--        <listener class="com.github.kkyeer.debuggertouml.listeners.MyProjectManagerListener"-->
+<!--                  topic="com.intellij.openapi.project.ProjectManagerListener"/>-->
     </applicationListeners>
 </idea-plugin>
