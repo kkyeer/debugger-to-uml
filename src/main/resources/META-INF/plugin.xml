@@ -1,18 +1,20 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.github.kkyeer.debuggertouml</id>
-    <name>IntelliJ Platform Plugin debugger-to-uml</name>
+    <id>com.github.kkyeer.debugger.to.uml</id>
+    <name>debugger-to-uml</name>
     <vendor>kkyeer</vendor>
 
-    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.java</depends>
 
-    <extensions defaultExtensionNs="com.intellij">
-<!--        <applicationService serviceImplementation="com.github.kkyeer.debuggertouml.services.MyApplicationService"/>-->
-<!--        <projectService serviceImplementation="com.github.kkyeer.debuggertouml.services.MyProjectService"/>-->
-    </extensions>
+    <actions>
 
-    <applicationListeners>
-<!--        <listener class="com.github.kkyeer.debuggertouml.listeners.MyProjectManagerListener"-->
-<!--                  topic="com.intellij.openapi.project.ProjectManagerListener"/>-->
-    </applicationListeners>
+
+        <action id="com.kkyeer.debugger.to.uml.ToUmlDebuggerAction"
+                class="com.kkyeer.debugger.to.uml.ToUmlDebuggerAction" text="Generate UML"
+                description="Generate UML from stack trace"
+                icon="com.kkyeer.debugger.to.uml.icons.SdkIcons.Sdk_default_icon">
+            <add-to-group group-id="XDebugger.Frames.Tree.Popup" anchor="last"/>
+        </action>
+    </actions>
+
 </idea-plugin>
