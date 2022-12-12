@@ -23,6 +23,7 @@ version = properties("pluginVersion")
 
 // Configure project's dependencies
 repositories {
+    mavenLocal()
     maven {
         setUrl("https://maven.aliyun.com/repository/public/")
     }
@@ -123,5 +124,8 @@ tasks {
         // Specify pre-release label to publish the plugin in a custom Release Channel automatically. Read more:
         // https://plugins.jetbrains.com/docs/intellij/deployment.html#specifying-a-release-channel
         channels.set(listOf(properties("pluginVersion").split('-').getOrElse(1) { "default" }.split('.').first()))
+    }
+    dependencies{
+        implementation("com.kkyeer:stack-to-uml:1.0-SNAPSHOT")
     }
 }
