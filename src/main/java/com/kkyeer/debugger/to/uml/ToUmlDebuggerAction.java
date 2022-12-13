@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -65,8 +66,9 @@ public class ToUmlDebuggerAction extends AnAction {
         InvokeChain invokeChain = new InvokeChain();
         List<Invocation> invocationList = new ArrayList<>();
         String prevClass = null;
-        for (Object item : items) {
-            JavaStackFrame frame = (JavaStackFrame) item;
+        Invocation prevInvocation = null;
+        for (int i = items.size() - 1; i >= 0; i--) {
+            JavaStackFrame frame = (JavaStackFrame) items.get(i);
             StackFrameDescriptorImpl descriptor = frame.getDescriptor();
             String currentClassName = descriptor.getLocation().declaringType().classObject().reflectedType().name();
             Invocation invocation = Invocation.Builder.builder()
@@ -74,9 +76,15 @@ public class ToUmlDebuggerAction extends AnAction {
                     .invokeDesc(descriptor.getName())
                     .invokeType(InvokeType.SIMPLE_INVOKE)
                     .invokedName(currentClassName)
+                    .followInvocationList(new ArrayList<>())
                     .build();
             prevClass = currentClassName;
-            invocationList.add(invocation);
+            if (prevInvocation != null) {
+                prevInvocation.getFollowInvocationList().add(invocation);
+            } else {
+                invocationList.add(invocation);
+            }
+            prevInvocation = invocation;
         }
         invokeChain.setInvokeList(invocationList);
         return invokeChain;
