@@ -9,7 +9,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.ui.CollectionListModel;
 import com.intellij.xdebugger.impl.frame.XDebuggerFramesList;
-import com.kkyeer.stack.to.uml.core.helper.InvocationToSvg;
+import com.kkyeer.stack.to.uml.core.helper.InvocationToImage;
 import com.kkyeer.stack.to.uml.core.model.Invocation;
 import com.kkyeer.stack.to.uml.core.model.InvokeChain;
 import com.kkyeer.stack.to.uml.core.model.InvokeType;
@@ -18,10 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @Author: kkyeer
@@ -45,20 +42,24 @@ public class ToUmlDebuggerAction extends AnAction {
         // String dlgTitle = event.getPresentation().getDescription();
         // If an element is selected in the editor, add info about it.
         XDebuggerFramesList framesList = event.getData(FRAMES_LIST);
-        CollectionListModel framesListModel = framesList.getModel();
-        List items = framesListModel.getItems();
+        List items = framesList.getModel().getItems();
         InvokeChain invokeChain = generateInvokeChain(items);
         File svgFile = null;
         try {
-            svgFile = new File("abc.svg");
-            FileOutputStream fos = new FileOutputStream(svgFile);
-            InvocationToSvg.printInvocationUmlToOutputStream(invokeChain, fos);
-            fos.close();
+            svgFile = InvocationToImage.generateRandomFile(invokeChain);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(svgFile.getAbsolutePath());
-        // Messages.showMessageDialog(currentProject, items.toString(), dlgTitle, Messages.getInformationIcon());
+        displayFile(svgFile, event);
+        // System.out.println(svgFile.getAbsolutePath());
+        // Messages.showMessageDialog(event.getProject(), items.toString(), dlgTitle, Messages.getInformationIcon());
+    }
+
+
+
+    public static void displayFile(File file, AnActionEvent event) {
+        UmlDisplay umlDisplay = new UmlDisplay(event.getProject(), file);
+        umlDisplay.show();
     }
 
 
