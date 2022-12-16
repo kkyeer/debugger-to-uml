@@ -9,10 +9,12 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.ui.CollectionListModel;
 import com.intellij.xdebugger.impl.frame.XDebuggerFramesList;
+import com.kkyeer.stack.to.uml.core.helper.ImageType;
 import com.kkyeer.stack.to.uml.core.helper.InvocationToImage;
 import com.kkyeer.stack.to.uml.core.model.Invocation;
 import com.kkyeer.stack.to.uml.core.model.InvokeChain;
 import com.kkyeer.stack.to.uml.core.model.InvokeType;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -46,18 +48,17 @@ public class ToUmlDebuggerAction extends AnAction {
         InvokeChain invokeChain = generateInvokeChain(items);
         File svgFile = null;
         try {
-            svgFile = InvocationToImage.generateRandomFile(invokeChain);
+            svgFile = InvocationToImage.generateRandomFile(invokeChain, ImageType.SVG);
         } catch (IOException e) {
             e.printStackTrace();
         }
         displayFile(svgFile, event);
-        // System.out.println(svgFile.getAbsolutePath());
-        // Messages.showMessageDialog(event.getProject(), items.toString(), dlgTitle, Messages.getInformationIcon());
     }
 
 
 
     public static void displayFile(File file, AnActionEvent event) {
+        System.out.println(file.getAbsolutePath());
         UmlDisplay umlDisplay = new UmlDisplay(event.getProject(), file);
         umlDisplay.show();
     }
@@ -71,7 +72,9 @@ public class ToUmlDebuggerAction extends AnAction {
         for (int i = items.size() - 1; i >= 0; i--) {
             JavaStackFrame frame = (JavaStackFrame) items.get(i);
             StackFrameDescriptorImpl descriptor = frame.getDescriptor();
-            String currentClassName = descriptor.getLocation().declaringType().classObject().reflectedType().name();
+            String currentClassName = getShortClassName(descriptor.getLocation().declaringType().name());
+
+
             Invocation invocation = Invocation.Builder.builder()
                     .invokerName(prevClass == null ? currentClassName : prevClass)
                     .invokeDesc(descriptor.getName())
@@ -89,6 +92,13 @@ public class ToUmlDebuggerAction extends AnAction {
         }
         invokeChain.setInvokeList(invocationList);
         return invokeChain;
+    }
+
+    private String getShortClassName(String className){
+        System.out.println(className);
+        className = className.replaceAll("\\$+", "");
+        String[] parts = className.split("\\.");
+        return parts[parts.length - 1];
     }
 
     @Override

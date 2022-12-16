@@ -1,9 +1,8 @@
 package com.kkyeer.debugger.to.uml;
 
-import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.uiDesigner.core.GridLayoutManager;
+import org.apache.batik.swing.JSVGCanvas;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -20,7 +19,7 @@ public class UmlDisplay extends DialogWrapper {
     /**
      * svg
      */
-    private File svgFile;
+    private File imgFile;
 
     /**
      * Creates modal {@code DialogWrapper}. The currently active window will be the dialog's parent.
@@ -36,9 +35,9 @@ public class UmlDisplay extends DialogWrapper {
         super(project, canBeParent);
     }
 
-    public UmlDisplay(@Nullable Project project, File svgFile) {
+    public UmlDisplay(@Nullable Project project, File imgFile) {
         super(project, false);
-        this.svgFile = svgFile;
+        this.imgFile = imgFile;
         setTitle("svg");
         init();
     }
@@ -59,9 +58,13 @@ public class UmlDisplay extends DialogWrapper {
         // JTextArea jTextArea = new JTextArea();
         // // jTextArea.setSize(30,30);
         // panel.add(jTextArea,BorderLayout.CENTER);
-        JLabel imgLabel = new JLabel(new ImageIcon(this.svgFile.getAbsolutePath()));
+        JLabel imgLabel = new JLabel(new ImageIcon(this.imgFile.getAbsolutePath()));
         imgLabel.setSize(20,20);
         panel.add(imgLabel,BorderLayout.CENTER);
+
+        // JSVGCanvas jsvgCanvas = new JSVGCanvas();
+        // jsvgCanvas.setURI(imgFile.toURI().toString());
+        // panel.add(jsvgCanvas, BorderLayout.CENTER);
         return panel;
     }
 }
