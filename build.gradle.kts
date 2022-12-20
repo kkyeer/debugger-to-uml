@@ -126,7 +126,8 @@ tasks {
         channels.set(listOf(properties("pluginVersion").split('-').getOrElse(1) { "default" }.split('.').first()))
     }
     dependencies{
-        implementation("com.kkyeer:stack-to-uml:1.0-SNAPSHOT")
-//        implementation("org.apache.xmlgraphics:batik-swing:1.16")
+        implementation("com.kkyeer:stack-to-uml:1.0-SNAPSHOT"){
+            exclude(group="xml-apis")
+        }
     }
 }

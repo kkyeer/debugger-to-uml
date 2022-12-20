@@ -2,7 +2,7 @@ package com.kkyeer.debugger.to.uml;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
-import org.apache.batik.swing.JSVGCanvas;
+import com.kkyeer.stack.to.uml.core.disp.SVGDisplayPanel;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -49,22 +49,23 @@ public class UmlDisplay extends DialogWrapper {
      */
     @Override
     protected @Nullable JComponent createCenterPanel() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout(0, 0));
-        panel.setSize(20,20);
-
-        // JLabel imgLabel = new JLabel(new ImageIcon("path_to_image.png"));
-        // panel.add(imgLabel, -1);
-        // JTextArea jTextArea = new JTextArea();
-        // // jTextArea.setSize(30,30);
-        // panel.add(jTextArea,BorderLayout.CENTER);
-        JLabel imgLabel = new JLabel(new ImageIcon(this.imgFile.getAbsolutePath()));
-        imgLabel.setSize(20,20);
-        panel.add(imgLabel,BorderLayout.CENTER);
+        return new SVGDisplayPanel(this.imgFile).createPanel();
+        // JPanel panel = new JPanel();
+        // panel.setLayout(new BorderLayout(0, 0));
+        // panel.setSize(20,20);
+        //
+        // // JLabel imgLabel = new JLabel(new ImageIcon("path_to_image.png"));
+        // // panel.add(imgLabel, -1);
+        // // JTextArea jTextArea = new JTextArea();
+        // // // jTextArea.setSize(30,30);
+        // // panel.add(jTextArea,BorderLayout.CENTER);
+        // JLabel imgLabel = new JLabel(new ImageIcon(this.imgFile.getAbsolutePath()));
+        // imgLabel.setSize(20,20);
+        // panel.add(imgLabel,BorderLayout.CENTER);
 
         // JSVGCanvas jsvgCanvas = new JSVGCanvas();
         // jsvgCanvas.setURI(imgFile.toURI().toString());
         // panel.add(jsvgCanvas, BorderLayout.CENTER);
-        return panel;
+        // return panel;
     }
 }
