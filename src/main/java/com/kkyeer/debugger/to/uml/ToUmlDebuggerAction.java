@@ -25,7 +25,7 @@ import java.util.*;
 /**
  * @Author: kkyeer
  * @Description:
- * @Date:Created in 下午6:41 2022/12/10
+ * @Date:Created in 18:41 2022/12/10
  * @Modified By:
  */
 public class ToUmlDebuggerAction extends AnAction {
@@ -44,6 +44,7 @@ public class ToUmlDebuggerAction extends AnAction {
         // String dlgTitle = event.getPresentation().getDescription();
         // If an element is selected in the editor, add info about it.
         XDebuggerFramesList framesList = event.getData(FRAMES_LIST);
+        // no type in framesList.getModel() response
         List items = framesList.getModel().getItems();
         InvokeChain invokeChain = generateInvokeChain(items);
         File svgFile = null;
