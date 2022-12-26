@@ -2,6 +2,8 @@ package com.kkyeer.debugger.to.uml;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.ui.jcef.JBCefApp;
+import com.intellij.ui.jcef.JBCefBrowser;
 import com.kkyeer.stack.to.uml.core.disp.SVGDisplayPanel;
 import com.kkyeer.stack.to.uml.core.disp.SwingNativeDisplayPanel;
 import org.jetbrains.annotations.Nullable;
@@ -53,11 +55,15 @@ public class UmlDisplay extends DialogWrapper {
      */
     @Override
     protected @Nullable JComponent createCenterPanel() {
-        JPanel panel = new JPanel();
-        panel.setSize(200, 200);
-        panel.setLayout(new BorderLayout());
-        JComponent svgPanel = new SwingNativeDisplayPanel(this.imgFile, panel).createPanel();
-        panel.add(svgPanel, BorderLayout.CENTER);
-        return panel;
+        if (!JBCefApp.isSupported()) {
+            JPanel panel = new JPanel();
+            panel.setSize(200, 200);
+            panel.setLayout(new BorderLayout());
+            JComponent svgPanel = new SwingNativeDisplayPanel(this.imgFile, panel).createPanel();
+            panel.add(svgPanel, BorderLayout.CENTER);
+            return panel;
+        }else {
+            return new JBCefBrowser("file:///"+imgFile.getAbsolutePath()).getComponent();
+        }
     }
 }
