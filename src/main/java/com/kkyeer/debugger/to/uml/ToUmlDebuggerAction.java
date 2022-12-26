@@ -5,22 +5,18 @@ import com.intellij.debugger.ui.impl.watch.StackFrameDescriptorImpl;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataKey;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
-import com.intellij.ui.CollectionListModel;
 import com.intellij.xdebugger.impl.frame.XDebuggerFramesList;
 import com.kkyeer.stack.to.uml.core.helper.ImageType;
 import com.kkyeer.stack.to.uml.core.helper.InvocationToImage;
 import com.kkyeer.stack.to.uml.core.model.Invocation;
 import com.kkyeer.stack.to.uml.core.model.InvokeChain;
 import com.kkyeer.stack.to.uml.core.model.InvokeType;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Author: kkyeer
@@ -38,10 +34,6 @@ public class ToUmlDebuggerAction extends AnAction {
      */
     @Override
     public void actionPerformed(@NotNull AnActionEvent event) {
-        // // Using the event, create and show a dialog
-        // Project currentProject = event.getProject();
-        // StringBuilder dlgMsg = new StringBuilder(event.getPresentation().getText() + " Selected!");
-        // String dlgTitle = event.getPresentation().getDescription();
         // If an element is selected in the editor, add info about it.
         XDebuggerFramesList framesList = event.getData(FRAMES_LIST);
         // no type in framesList.getModel() response
@@ -59,7 +51,6 @@ public class ToUmlDebuggerAction extends AnAction {
 
 
     public static void displayFile(File file, AnActionEvent event) {
-        System.out.println(file.getAbsolutePath());
         UmlDisplay umlDisplay = new UmlDisplay(event.getProject(), file);
         umlDisplay.show();
     }
@@ -74,7 +65,6 @@ public class ToUmlDebuggerAction extends AnAction {
             JavaStackFrame frame = (JavaStackFrame) items.get(i);
             StackFrameDescriptorImpl descriptor = frame.getDescriptor();
             String currentClassName = getShortClassName(descriptor.getLocation().declaringType().name());
-
 
             Invocation invocation = Invocation.Builder.builder()
                     .invokerName(prevClass == null ? currentClassName : prevClass)
@@ -96,7 +86,6 @@ public class ToUmlDebuggerAction extends AnAction {
     }
 
     private String getShortClassName(String className){
-        System.out.println(className);
         className = className.replaceAll("\\$+", "");
         String[] parts = className.split("\\.");
         return parts[parts.length - 1];
