@@ -1,17 +1,26 @@
 package com.kkyeer.debugger.to.uml;
 
+import com.intellij.debugger.actions.DebuggerAction;
+import com.intellij.debugger.actions.PopFrameAction;
 import com.intellij.debugger.engine.JavaStackFrame;
+import com.intellij.debugger.ui.impl.watch.DebuggerTreeNodeImpl;
+import com.intellij.debugger.ui.impl.watch.NodeDescriptorImpl;
 import com.intellij.debugger.ui.impl.watch.StackFrameDescriptorImpl;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataKey;
+import com.intellij.openapi.project.Project;
+import com.intellij.xdebugger.XDebugSession;
+import com.intellij.xdebugger.frame.XStackFrame;
 import com.intellij.xdebugger.impl.frame.XDebuggerFramesList;
+import com.intellij.xdebugger.impl.ui.DebuggerUIUtil;
 import com.kkyeer.stack.to.uml.core.helper.ImageType;
 import com.kkyeer.stack.to.uml.core.helper.InvocationToImage;
 import com.kkyeer.stack.to.uml.core.model.Invocation;
 import com.kkyeer.stack.to.uml.core.model.InvokeChain;
 import com.kkyeer.stack.to.uml.core.model.InvokeType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +47,9 @@ public class ToUmlDebuggerAction extends AnAction {
         XDebuggerFramesList framesList = event.getData(FRAMES_LIST);
         // no type in framesList.getModel() response
         List items = framesList.getModel().getItems();
-        InvokeChain invokeChain = generateInvokeChain(items);
+        XStackFrame selectedFrame = framesList.getSelectedFrame();
+        int index = items.indexOf(selectedFrame);
+        InvokeChain invokeChain = generateInvokeChain(items, index);
         File svgFile = null;
         try {
             svgFile = InvocationToImage.generateRandomFile(invokeChain, ImageType.SVG);
@@ -56,12 +67,12 @@ public class ToUmlDebuggerAction extends AnAction {
     }
 
 
-    public InvokeChain generateInvokeChain(List items) {
+    public InvokeChain generateInvokeChain(List items, int selectedIndex) {
         InvokeChain invokeChain = new InvokeChain();
         List<Invocation> invocationList = new ArrayList<>();
         String prevClass = null;
         Invocation prevInvocation = null;
-        for (int i = items.size() - 1; i >= 0; i--) {
+        for (int i = items.size() - 1; i >= selectedIndex; i--) {
             JavaStackFrame frame = (JavaStackFrame) items.get(i);
             StackFrameDescriptorImpl descriptor = frame.getDescriptor();
             String currentClassName = getShortClassName(descriptor.getLocation().declaringType().name());
