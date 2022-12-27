@@ -62,8 +62,12 @@ public class ToUmlDebuggerAction extends AnAction {
 
 
     public static void displayFile(File file, AnActionEvent event) {
+        System.out.println(file.getAbsolutePath());
         UmlDisplay umlDisplay = new UmlDisplay(event.getProject(), file);
         umlDisplay.show();
+        int exitCode = umlDisplay.getExitCode();
+        System.out.println(file.getAbsolutePath());
+        file.delete();
     }
 
 
