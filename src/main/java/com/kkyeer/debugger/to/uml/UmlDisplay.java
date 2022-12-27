@@ -4,7 +4,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.ui.jcef.JBCefApp;
 import com.intellij.ui.jcef.JBCefBrowser;
-import com.kkyeer.stack.to.uml.core.disp.SwingNativeDisplayPanel;
+import com.kkyeer.debugger.to.uml.disp.SwingNativeDisplayPanel;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.Nullable;
 

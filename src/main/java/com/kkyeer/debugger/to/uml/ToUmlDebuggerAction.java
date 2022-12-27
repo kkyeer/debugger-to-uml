@@ -14,11 +14,11 @@ import com.intellij.xdebugger.XDebugSession;
 import com.intellij.xdebugger.frame.XStackFrame;
 import com.intellij.xdebugger.impl.frame.XDebuggerFramesList;
 import com.intellij.xdebugger.impl.ui.DebuggerUIUtil;
-import com.kkyeer.stack.to.uml.core.helper.ImageType;
-import com.kkyeer.stack.to.uml.core.helper.InvocationToImage;
-import com.kkyeer.stack.to.uml.core.model.Invocation;
-import com.kkyeer.stack.to.uml.core.model.InvokeChain;
-import com.kkyeer.stack.to.uml.core.model.InvokeType;
+import com.kkyeer.debugger.to.uml.helper.ImageType;
+import com.kkyeer.debugger.to.uml.helper.InvocationToImage;
+import com.kkyeer.debugger.to.uml.model.Invocation;
+import com.kkyeer.debugger.to.uml.model.InvokeChain;
+import com.kkyeer.debugger.to.uml.model.InvokeType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -11,8 +11,7 @@
 
         <action id="com.kkyeer.debugger.to.uml.ToUmlDebuggerAction"
                 class="com.kkyeer.debugger.to.uml.ToUmlDebuggerAction" text="Generate UML"
-                description="Generate UML from stack trace"
-                icon="com.kkyeer.debugger.to.uml.icons.SdkIcons.Sdk_default_icon">
+                description="Generate UML from stack trace">
             <add-to-group group-id="XDebugger.Frames.Tree.Popup" anchor="last"/>
         </action>
     </actions>
