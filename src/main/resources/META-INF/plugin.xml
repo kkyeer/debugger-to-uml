@@ -3,7 +3,7 @@
     <id>com.github.kkyeer.debugger.to.uml</id>
     <name>Debugger-to-Uml</name>
     <vendor>kkyeer</vendor>
-    <idea-version since-build="213"/>
+    <idea-version since-build="212"/>
     <description>
         This plugin allows you to generate sequence diagram uml from Java debugger stack and save it as svg file.
     </description>
