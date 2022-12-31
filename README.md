@@ -16,11 +16,11 @@
 - [ ] Click the <kbd>Watch</kbd> button on the top of the [IntelliJ Platform Plugin Template][template] to be notified about releases containing new features and fixes.
 
 <!-- Plugin description -->
-This Fancy IntelliJ Platform Plugin is going to be your implementation of the brilliant ideas that you have.
+This plugin allows you to generate sequence diagram uml from Java debugger stack and save it as svg file.
+Just need 2 steps:
 
-This specific section is a source for the [plugin.xml](/src/main/resources/META-INF/plugin.xml) file which will be extracted by the [Gradle](/build.gradle.kts) during the build process.
-
-To keep everything working, do not remove `<!-- ... -->` sections. 
+1. Right-click the frame in Debugger Panel
+2. Click "Generate UML" button</li>
 <!-- Plugin description end -->
 
 ## Installation

@@ -3,16 +3,22 @@
     <id>com.github.kkyeer.debugger.to.uml</id>
     <name>Debugger-to-Uml</name>
     <vendor>kkyeer</vendor>
-    <idea-version since-build="212"/>
+    <idea-version since-build="213"/>
+
     <description>
-        This plugin allows you to generate sequence diagram uml from Java debugger stack and save it as svg file.
+        <![CDATA[
+            This plugin allows you to generate sequence diagram uml from Java debugger stack and save it as svg file.
+            Just need 2 steps:
+            <ul>
+              <li>Right click the frame in Debugger Panel</li>
+              <li>Click "Generate UML" button</li>
+            </ul>
+        ]]>
     </description>
 
     <depends>com.intellij.java</depends>
 
     <actions>
-
-
         <action id="com.kkyeer.debugger.to.uml.ToUmlDebuggerAction"
                 class="com.kkyeer.debugger.to.uml.ToUmlDebuggerAction" text="Generate UML"
                 description="Generate UML from stack trace">
