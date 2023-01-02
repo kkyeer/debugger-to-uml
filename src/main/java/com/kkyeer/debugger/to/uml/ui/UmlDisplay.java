@@ -1,19 +1,18 @@
-package com.kkyeer.debugger.to.uml;
+package com.kkyeer.debugger.to.uml.ui;
 
+import com.intellij.debugger.engine.JavaStackFrame;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.ui.jcef.JBCefApp;
 import com.intellij.ui.jcef.JBCefBrowser;
-import com.kkyeer.debugger.to.uml.disp.SwingNativeDisplayPanel;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @Author: kkyeer
@@ -27,9 +26,17 @@ public class UmlDisplay extends DialogWrapper {
      */
     private File imgFile;
 
+    private List<JavaStackFrame> stackFrameList;
+
     private Project project;
 
     private Container parentPanel;
+
+    private StackFrameControlPanel frameControlPanel;
+
+    private JBCefBrowser jbCefBrowser;
+
+
 
     /**
      * Creates modal {@code DialogWrapper}. The currently active window will be the dialog's parent.
@@ -45,10 +52,10 @@ public class UmlDisplay extends DialogWrapper {
         super(project, canBeParent);
     }
 
-    public UmlDisplay(@Nullable Project project, File imgFile) {
+    public UmlDisplay(@Nullable Project project, List<JavaStackFrame> stackFrameList) {
         super(project, false);
-        this.imgFile = imgFile;
         this.project = project;
+        this.stackFrameList = stackFrameList;
         setTitle("Sequence Diagram of Chosen Stack");
         init();
     }
@@ -65,8 +72,9 @@ public class UmlDisplay extends DialogWrapper {
             JPanel panel = new JPanel();
             panel.setSize(200, 200);
             panel.setLayout(new BorderLayout());
-            JComponent svgPanel = new SwingNativeDisplayPanel(this.imgFile, panel).createPanel();
-            panel.add(svgPanel, BorderLayout.CENTER);
+            JLabel label = new JLabel();
+            label.setText("JCEF is needed");
+            panel.add(label, BorderLayout.CENTER);
             return panel;
         }else {
             return mainPanel();
@@ -78,14 +86,26 @@ public class UmlDisplay extends DialogWrapper {
         panel.setLayout(new BorderLayout(0, 0));
         panel.setSize(1000,500);
         this.parentPanel = panel;
-        JComponent component = new JBCefBrowser("file:///" + imgFile.getAbsolutePath()).getComponent();
+
+
+        StackFrameControlPanel stackFrameControlPanel = new StackFrameControlPanel(stackFrameList);
+        this.frameControlPanel = stackFrameControlPanel;
+        panel.add(stackFrameControlPanel.getPanel(), BorderLayout.WEST);
+
+
+        generateUMLFile();
+        this.jbCefBrowser = new JBCefBrowser("file:///" + imgFile.getAbsolutePath());
+        JComponent component = jbCefBrowser.getComponent();
         panel.add(component, BorderLayout.CENTER);
 
         JMenuBar menuBar = new JMenuBar();
         configureMenuBar(menuBar);
         panel.add(menuBar, BorderLayout.NORTH);
+
         return panel;
     }
+
+
 
     public void configureMenuBar(JMenuBar menuBar) {
         JButton saveBtn = new JButton();
@@ -95,6 +115,29 @@ public class UmlDisplay extends DialogWrapper {
                 e -> configureFileChooser()
         );
         menuBar.add(saveBtn);
+
+        JButton regenerateBtn = new JButton();
+        regenerateBtn.setText("Regenerate");
+        regenerateBtn.setVisible(true);
+        regenerateBtn.addActionListener(
+                e -> {
+                    generateUMLFile();
+                    refreshImgDisplay();
+                }
+        );
+        menuBar.add(regenerateBtn);
+    }
+
+    public void generateUMLFile(){
+        File generateSvgFile = this.frameControlPanel.generateSvgFile();
+        if (this.imgFile != null && this.imgFile.exists()) {
+            this.imgFile.deleteOnExit();
+        }
+        this.imgFile = generateSvgFile;
+    }
+
+    private void refreshImgDisplay(){
+        this.jbCefBrowser.loadURL("file:///" + imgFile.getAbsolutePath());
     }
 
 
