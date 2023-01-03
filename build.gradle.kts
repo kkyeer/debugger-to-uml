@@ -129,8 +129,5 @@ tasks {
         implementation("net.sourceforge.plantuml:plantuml:1.2022.13"){
             exclude(group="xml-apis")
         }
-        implementation("org.apache.xmlgraphics:batik-swing:1.16"){
-            exclude(group="xml-apis")
-        }
     }
 }
