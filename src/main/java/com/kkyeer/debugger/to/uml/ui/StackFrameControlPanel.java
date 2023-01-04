@@ -3,6 +3,7 @@ package com.kkyeer.debugger.to.uml.ui;
 import com.intellij.debugger.engine.JavaStackFrame;
 import com.intellij.debugger.ui.impl.watch.StackFrameDescriptorImpl;
 import com.intellij.ui.components.JBCheckBox;
+import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBList;
 import com.intellij.ui.table.JBTable;
 import com.intellij.util.ui.table.JBListTable;
@@ -50,21 +51,21 @@ public class StackFrameControlPanel {
         listUI.setCellRenderer(
                 (list, value, index, isSelected, cellHasFocus) -> {
                     String text = value.getDescriptor().toString();
-                    JBCheckBox checkBox = new JBCheckBox();
-                    checkBox.setText(text);
-                    checkBox.setSelected(isSelected);
-                    checkBox.addItemListener(
-                            e -> System.out.println(e)
-                    );
-                    checkBox.addChangeListener(
-                            new ChangeListener() {
-                                @Override
-                                public void stateChanged(ChangeEvent e) {
-                                    System.out.println(e);
-                                }
-                            }
-                    );
-                    return checkBox;
+                    // JBCheckBox checkBox = new JBCheckBox();
+                    // checkBox.setText(text);
+                    // checkBox.setSelected(isSelected);
+                    // checkBox.addItemListener(
+                    //         e -> System.out.println(e)
+                    // );
+                    // checkBox.addChangeListener(
+                    //         new ChangeListener() {
+                    //             @Override
+                    //             public void stateChanged(ChangeEvent e) {
+                    //                 System.out.println(e);
+                    //             }
+                    //         }
+                    // );
+                    return new JBLabel(text);
                 }
         );
         listUI.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);

@@ -33,6 +33,13 @@ repositories {
     mavenCentral()
 }
 
+
+dependencies{
+    implementation("net.sourceforge.plantuml:plantuml:1.2022.13"){
+        exclude(group="xml-apis")
+    }
+}
+
 java {
     sourceCompatibility = JavaVersion.VERSION_11
 }
@@ -124,10 +131,5 @@ tasks {
         // Specify pre-release label to publish the plugin in a custom Release Channel automatically. Read more:
         // https://plugins.jetbrains.com/docs/intellij/deployment.html#specifying-a-release-channel
         channels.set(listOf(properties("pluginVersion").split('-').getOrElse(1) { "default" }.split('.').first()))
-    }
-    dependencies{
-        implementation("net.sourceforge.plantuml:plantuml:1.2022.13"){
-            exclude(group="xml-apis")
-        }
     }
 }
