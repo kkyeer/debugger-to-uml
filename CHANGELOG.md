@@ -8,4 +8,5 @@
 
 ## [1.0.1]
 ### Support control for frames
-- now can choose some stack frames
+- support choose of stack frames
+- file saver ui optimize

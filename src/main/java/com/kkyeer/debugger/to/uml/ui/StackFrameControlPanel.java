@@ -2,11 +2,8 @@ package com.kkyeer.debugger.to.uml.ui;
 
 import com.intellij.debugger.engine.JavaStackFrame;
 import com.intellij.debugger.ui.impl.watch.StackFrameDescriptorImpl;
-import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBList;
-import com.intellij.ui.table.JBTable;
-import com.intellij.util.ui.table.JBListTable;
 import com.kkyeer.debugger.to.uml.helper.ImageType;
 import com.kkyeer.debugger.to.uml.helper.InvocationToImage;
 import com.kkyeer.debugger.to.uml.model.Invocation;
@@ -14,12 +11,7 @@ import com.kkyeer.debugger.to.uml.model.InvokeChain;
 import com.kkyeer.debugger.to.uml.model.InvokeType;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.plaf.ListUI;
 import java.awt.*;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,7 +55,6 @@ public class StackFrameControlPanel {
     }
 
     private int[] getSelectedFrames(){
-        System.out.println("selected" + this.selectionModel.getSelectedItemsCount() + " items");
         return this.selectionModel.getSelectedIndices();
     }
 

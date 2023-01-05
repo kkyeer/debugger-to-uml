@@ -1,14 +1,11 @@
 package com.kkyeer.debugger.to.uml.ui;
 
 import com.intellij.debugger.engine.JavaStackFrame;
-import com.intellij.ide.util.TreeFileChooserDialog;
-import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserFactory;
 import com.intellij.openapi.fileChooser.FileSaverDescriptor;
 import com.intellij.openapi.fileChooser.FileSaverDialog;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VirtualFileWrapper;
 import com.intellij.ui.jcef.JBCefApp;
 import com.intellij.ui.jcef.JBCefBrowser;
@@ -17,12 +14,12 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @Author: kkyeer
@@ -122,7 +119,7 @@ public class UmlDisplay extends DialogWrapper {
         saveBtn.setText("Save");
         saveBtn.setVisible(true);
         saveBtn.addActionListener(
-                e -> configureFileChooser()
+                this::configureFileChooser
         );
         menuBar.add(saveBtn);
 
@@ -151,16 +148,16 @@ public class UmlDisplay extends DialogWrapper {
     }
 
 
-    private void configureFileChooser() {
+    private void configureFileChooser(ActionEvent event) {
         FileSaverDescriptor fileSaverDescriptor = new FileSaverDescriptor("Export Sequential Diagrams ", "File name:", "svg");
         FileSaverDialog dialog = FileChooserFactory.getInstance().createSaveFileDialog(fileSaverDescriptor, this.project);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-        String defaultFileName = "Sequence_" + simpleDateFormat.format(new Date()) + ".svg";
+        String defaultFileName = "Sequence_" + simpleDateFormat.format(new Date());
         @Nullable VirtualFileWrapper virtualFileWrapper = dialog.save(defaultFileName);
         try {
             FileUtils.copyFile(this.imgFile,virtualFileWrapper.getFile());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 }
