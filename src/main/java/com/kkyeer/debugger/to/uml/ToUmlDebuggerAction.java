@@ -1,23 +1,13 @@
 package com.kkyeer.debugger.to.uml;
 
 import com.intellij.debugger.engine.JavaStackFrame;
-import com.intellij.debugger.ui.impl.watch.StackFrameDescriptorImpl;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataKey;
-import com.intellij.xdebugger.frame.XStackFrame;
 import com.intellij.xdebugger.impl.frame.XDebuggerFramesList;
 import com.kkyeer.debugger.to.uml.ui.UmlDisplay;
-import com.kkyeer.debugger.to.uml.helper.ImageType;
-import com.kkyeer.debugger.to.uml.helper.InvocationToImage;
-import com.kkyeer.debugger.to.uml.model.Invocation;
-import com.kkyeer.debugger.to.uml.model.InvokeChain;
-import com.kkyeer.debugger.to.uml.model.InvokeType;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

@@ -51,20 +51,6 @@ public class StackFrameControlPanel {
         listUI.setCellRenderer(
                 (list, value, index, isSelected, cellHasFocus) -> {
                     String text = value.getDescriptor().toString();
-                    // JBCheckBox checkBox = new JBCheckBox();
-                    // checkBox.setText(text);
-                    // checkBox.setSelected(isSelected);
-                    // checkBox.addItemListener(
-                    //         e -> System.out.println(e)
-                    // );
-                    // checkBox.addChangeListener(
-                    //         new ChangeListener() {
-                    //             @Override
-                    //             public void stateChanged(ChangeEvent e) {
-                    //                 System.out.println(e);
-                    //             }
-                    //         }
-                    // );
                     return new JBLabel(text);
                 }
         );

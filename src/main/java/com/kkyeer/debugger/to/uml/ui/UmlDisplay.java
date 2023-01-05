@@ -1,8 +1,15 @@
 package com.kkyeer.debugger.to.uml.ui;
 
 import com.intellij.debugger.engine.JavaStackFrame;
+import com.intellij.ide.util.TreeFileChooserDialog;
+import com.intellij.openapi.fileChooser.FileChooser;
+import com.intellij.openapi.fileChooser.FileChooserFactory;
+import com.intellij.openapi.fileChooser.FileSaverDescriptor;
+import com.intellij.openapi.fileChooser.FileSaverDialog;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.util.io.FileUtil;
+import com.intellij.openapi.vfs.VirtualFileWrapper;
 import com.intellij.ui.jcef.JBCefApp;
 import com.intellij.ui.jcef.JBCefBrowser;
 import org.apache.commons.io.FileUtils;
@@ -13,6 +20,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @Author: kkyeer
@@ -142,18 +150,14 @@ public class UmlDisplay extends DialogWrapper {
 
 
     private void configureFileChooser() {
-        JFileChooser jFileChooser = new JFileChooser();
-        jFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        jFileChooser.setVisible(true);
-        jFileChooser.setCurrentDirectory(new File(this.project.getBasePath()));
-        int code = jFileChooser.showSaveDialog(this.parentPanel);
-        if (JFileChooser.APPROVE_OPTION == code) {
-            File selectedFile = jFileChooser.getSelectedFile();
-            try {
-                FileUtils.copyFile(this.imgFile, selectedFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        FileSaverDescriptor fileSaverDescriptor = new FileSaverDescriptor("Export Sequential Diagrams ", "File name:", "svg");
+        FileSaverDialog dialog = FileChooserFactory.getInstance().createSaveFileDialog(fileSaverDescriptor, this.project);
+
+        @Nullable VirtualFileWrapper virtualFileWrapper = dialog.save(UUID.randomUUID().toString() + ".svg");
+        try {
+            FileUtils.copyFile(this.imgFile,virtualFileWrapper.getFile());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }
