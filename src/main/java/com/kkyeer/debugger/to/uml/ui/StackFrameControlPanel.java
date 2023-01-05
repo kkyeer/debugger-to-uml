@@ -1,7 +1,10 @@
 package com.kkyeer.debugger.to.uml.ui;
 
 import com.intellij.debugger.engine.JavaStackFrame;
+import com.intellij.debugger.impl.DebuggerUtilsEx;
+import com.intellij.debugger.settings.ThreadsViewSettings;
 import com.intellij.debugger.ui.impl.watch.StackFrameDescriptorImpl;
+import com.intellij.openapi.util.NlsSafe;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBList;
 import com.kkyeer.debugger.to.uml.helper.ImageType;
@@ -33,7 +36,7 @@ public class StackFrameControlPanel {
         this.stackFrameList = stackFrameList;
     }
 
-    public JPanel getPanel(){
+    public JPanel getPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
         JBList<JavaStackFrame> listUI = new JBList<>();
@@ -41,9 +44,14 @@ public class StackFrameControlPanel {
         listUI.setListData(frames);
         listUI.setFixedCellHeight(35);
         listUI.setCellRenderer(
-                (list, value, index, isSelected, cellHasFocus) -> {
-                    String text = value.getDescriptor().toString();
-                    return new JBLabel(text);
+                (list, stackFrame, index, isSelected, cellHasFocus) -> {
+                    @NlsSafe StringBuilder label = new StringBuilder();
+                    label.append(stackFrame.getDescriptor().getMethod().name())
+                            .append(':').append(DebuggerUtilsEx.getLineNumber(stackFrame.getDescriptor().getLocation(), false))
+                            .append("   [")
+                            .append(stackFrame.getDescriptor().getLocation().declaringType().name())
+                            .append("]");
+                    return new JBLabel(label.toString());
                 }
         );
         listUI.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
@@ -54,11 +62,12 @@ public class StackFrameControlPanel {
         return panel;
     }
 
-    private int[] getSelectedFrames(){
+    private int[] getSelectedFrames() {
         return this.selectionModel.getSelectedIndices();
     }
 
-    private static class SFCPSelectionModel extends DefaultListSelectionModel { }
+    private static class SFCPSelectionModel extends DefaultListSelectionModel {
+    }
 
     public InvokeChain generateInvokeChain(List<JavaStackFrame> items, int[] selectedIndexes) {
         InvokeChain invokeChain = new InvokeChain();
@@ -97,13 +106,13 @@ public class StackFrameControlPanel {
         return invokeChain;
     }
 
-    private String getShortClassName(String className){
+    private String getShortClassName(String className) {
         className = className.replaceAll("\\$+", "");
         String[] parts = className.split("\\.");
         return parts[parts.length - 1];
     }
 
-    public File generateSvgFile(){
+    public File generateSvgFile() {
         int[] selectedFrames = getSelectedFrames();
         InvokeChain invokeChain = generateInvokeChain(stackFrameList, selectedFrames);
         File svgFile = null;
