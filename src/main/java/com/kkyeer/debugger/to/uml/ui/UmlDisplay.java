@@ -19,6 +19,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -152,8 +154,9 @@ public class UmlDisplay extends DialogWrapper {
     private void configureFileChooser() {
         FileSaverDescriptor fileSaverDescriptor = new FileSaverDescriptor("Export Sequential Diagrams ", "File name:", "svg");
         FileSaverDialog dialog = FileChooserFactory.getInstance().createSaveFileDialog(fileSaverDescriptor, this.project);
-
-        @Nullable VirtualFileWrapper virtualFileWrapper = dialog.save(UUID.randomUUID().toString() + ".svg");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+        String defaultFileName = "Sequence_" + simpleDateFormat.format(new Date()) + ".svg";
+        @Nullable VirtualFileWrapper virtualFileWrapper = dialog.save(defaultFileName);
         try {
             FileUtils.copyFile(this.imgFile,virtualFileWrapper.getFile());
         } catch (IOException e) {
