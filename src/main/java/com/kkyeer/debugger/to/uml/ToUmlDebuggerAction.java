@@ -5,6 +5,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataKey;
 import com.intellij.xdebugger.impl.frame.XDebuggerFramesList;
+import com.kkyeer.debugger.to.uml.ui.UmlData;
 import com.kkyeer.debugger.to.uml.ui.UmlDisplay;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,7 +43,9 @@ public class ToUmlDebuggerAction extends AnAction {
 
 
     public static void displayFile(AnActionEvent event, List<JavaStackFrame> stackFrameList) {
-        UmlDisplay umlDisplay = new UmlDisplay(event.getProject(), stackFrameList);
+        UmlData umlData = new UmlData(stackFrameList);
+        umlData.setStackFrameList(stackFrameList);
+        UmlDisplay umlDisplay = new UmlDisplay(event.getProject(), umlData);
         umlDisplay.show();
     }
 

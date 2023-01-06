@@ -2,23 +2,12 @@ package com.kkyeer.debugger.to.uml.ui;
 
 import com.intellij.debugger.engine.JavaStackFrame;
 import com.intellij.debugger.impl.DebuggerUtilsEx;
-import com.intellij.debugger.settings.ThreadsViewSettings;
-import com.intellij.debugger.ui.impl.watch.StackFrameDescriptorImpl;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBList;
-import com.kkyeer.debugger.to.uml.helper.ImageType;
-import com.kkyeer.debugger.to.uml.helper.InvocationToImage;
-import com.kkyeer.debugger.to.uml.model.Invocation;
-import com.kkyeer.debugger.to.uml.model.InvokeChain;
-import com.kkyeer.debugger.to.uml.model.InvokeType;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @Author: kkyeer
@@ -27,20 +16,20 @@ import java.util.List;
  * @Modified By:
  */
 public class StackFrameControlPanel {
-    private List<JavaStackFrame> stackFrameList;
+    private UmlData umlData;
 
     private SFCPSelectionModel selectionModel;
 
 
-    public StackFrameControlPanel(List<JavaStackFrame> stackFrameList) {
-        this.stackFrameList = stackFrameList;
+    public StackFrameControlPanel(UmlData umlData) {
+        this.umlData = umlData;
     }
 
     public JPanel getPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
         JBList<JavaStackFrame> listUI = new JBList<>();
-        JavaStackFrame[] frames = stackFrameList.toArray(new JavaStackFrame[stackFrameList.size()]);
+        JavaStackFrame[] frames = this.umlData.getStackFrameList().toArray(new JavaStackFrame[this.umlData.getStackFrameList().size()]);
         listUI.setListData(frames);
         listUI.setFixedCellHeight(35);
         listUI.setCellRenderer(
@@ -62,66 +51,13 @@ public class StackFrameControlPanel {
         return panel;
     }
 
-    private int[] getSelectedFrames() {
-        return this.selectionModel.getSelectedIndices();
+    public void refreshSelectedFrames() {
+        this.umlData.setSelectedFrameIndexes(this.selectionModel.getSelectedIndices());
     }
 
     private static class SFCPSelectionModel extends DefaultListSelectionModel {
     }
 
-    public InvokeChain generateInvokeChain(List<JavaStackFrame> items, int[] selectedIndexes) {
-        InvokeChain invokeChain = new InvokeChain();
-        List<Invocation> invocationList = new ArrayList<>();
-        String prevClass = null;
-        Invocation prevInvocation = null;
-        List<JavaStackFrame> selected = new ArrayList<>();
-        if (selectedIndexes != null && selectedIndexes.length != 0) {
-            for (int i = 0; i < selectedIndexes.length; i++) {
-                selected.add(items.get(selectedIndexes[i]));
-            }
-        } else {
-            selected = items;
-        }
-        for (int i = selected.size() - 1; i >= 0; i--) {
-            JavaStackFrame frame = selected.get(i);
-            StackFrameDescriptorImpl descriptor = frame.getDescriptor();
-            String currentClassName = getShortClassName(descriptor.getLocation().declaringType().name());
 
-            Invocation invocation = Invocation.Builder.builder()
-                    .invokerName(prevClass == null ? currentClassName : prevClass)
-                    .invokeDesc(descriptor.getName())
-                    .invokeType(InvokeType.SIMPLE_INVOKE)
-                    .invokedName(currentClassName)
-                    .followInvocationList(new ArrayList<>())
-                    .build();
-            prevClass = currentClassName;
-            if (prevInvocation != null) {
-                prevInvocation.getFollowInvocationList().add(invocation);
-            } else {
-                invocationList.add(invocation);
-            }
-            prevInvocation = invocation;
-        }
-        invokeChain.setInvokeList(invocationList);
-        return invokeChain;
-    }
-
-    private String getShortClassName(String className) {
-        className = className.replaceAll("\\$+", "");
-        String[] parts = className.split("\\.");
-        return parts[parts.length - 1];
-    }
-
-    public File generateSvgFile() {
-        int[] selectedFrames = getSelectedFrames();
-        InvokeChain invokeChain = generateInvokeChain(stackFrameList, selectedFrames);
-        File svgFile = null;
-        try {
-            svgFile = InvocationToImage.generateRandomFile(invokeChain, ImageType.SVG);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return svgFile;
-    }
 
 }

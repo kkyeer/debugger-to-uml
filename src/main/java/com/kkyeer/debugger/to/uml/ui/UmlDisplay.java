@@ -1,6 +1,5 @@
 package com.kkyeer.debugger.to.uml.ui;
 
-import com.intellij.debugger.engine.JavaStackFrame;
 import com.intellij.openapi.fileChooser.FileChooserFactory;
 import com.intellij.openapi.fileChooser.FileSaverDescriptor;
 import com.intellij.openapi.fileChooser.FileSaverDialog;
@@ -15,11 +14,9 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 /**
  * @Author: kkyeer
@@ -28,41 +25,20 @@ import java.util.List;
  * @Modified By:
  */
 public class UmlDisplay extends DialogWrapper {
-    /**
-     * svg
-     */
-    private File imgFile;
-
-    private List<JavaStackFrame> stackFrameList;
 
     private Project project;
-
-    private Container parentPanel;
 
     private StackFrameControlPanel frameControlPanel;
 
     private JBCefBrowser jbCefBrowser;
 
+    private UmlData umlData;
 
 
-    /**
-     * Creates modal {@code DialogWrapper}. The currently active window will be the dialog's parent.
-     *
-     * @param project     parent window for the dialog will be calculated based on focused window for the
-     *                    specified {@code project}. This parameter can be {@code null}. In this case parent window
-     *                    will be suggested based on current focused window.
-     * @param canBeParent specifies whether the dialog can be a parent for other windows. This parameter is used
-     *                    by {@code WindowManager}.
-     * @throws IllegalStateException if the dialog is invoked not on the event dispatch thread
-     */
-    protected UmlDisplay(@Nullable Project project, boolean canBeParent) {
-        super(project, canBeParent);
-    }
-
-    public UmlDisplay(@Nullable Project project, List<JavaStackFrame> stackFrameList) {
+    public UmlDisplay(@Nullable Project project, UmlData umlData) {
         super(project, false);
         this.project = project;
-        this.stackFrameList = stackFrameList;
+        this.umlData = umlData;
         setTitle("Sequence Diagram of Chosen Stack");
         init();
     }
@@ -92,16 +68,13 @@ public class UmlDisplay extends DialogWrapper {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout(0, 0));
         panel.setSize(1000,500);
-        this.parentPanel = panel;
 
 
-        StackFrameControlPanel stackFrameControlPanel = new StackFrameControlPanel(stackFrameList);
+        StackFrameControlPanel stackFrameControlPanel = new StackFrameControlPanel(this.umlData);
         this.frameControlPanel = stackFrameControlPanel;
         panel.add(stackFrameControlPanel.getPanel(), BorderLayout.WEST);
 
-
-        generateUMLFile();
-        this.jbCefBrowser = new JBCefBrowser("file:///" + imgFile.getAbsolutePath());
+        this.jbCefBrowser = new JBCefBrowser("file:///" + this.umlData.getImgFile().getAbsolutePath());
         JComponent component = jbCefBrowser.getComponent();
         panel.add(component, BorderLayout.CENTER);
 
@@ -128,23 +101,16 @@ public class UmlDisplay extends DialogWrapper {
         regenerateBtn.setVisible(true);
         regenerateBtn.addActionListener(
                 e -> {
-                    generateUMLFile();
+                    this.frameControlPanel.refreshSelectedFrames();
                     refreshImgDisplay();
                 }
         );
         menuBar.add(regenerateBtn);
     }
 
-    public void generateUMLFile(){
-        File generateSvgFile = this.frameControlPanel.generateSvgFile();
-        if (this.imgFile != null && this.imgFile.exists()) {
-            this.imgFile.deleteOnExit();
-        }
-        this.imgFile = generateSvgFile;
-    }
 
     private void refreshImgDisplay(){
-        this.jbCefBrowser.loadURL("file:///" + imgFile.getAbsolutePath());
+        this.jbCefBrowser.loadURL("file:///" + this.umlData.getImgFile().getAbsolutePath());
     }
 
 
@@ -155,7 +121,7 @@ public class UmlDisplay extends DialogWrapper {
         String defaultFileName = "Sequence_" + simpleDateFormat.format(new Date());
         @Nullable VirtualFileWrapper virtualFileWrapper = dialog.save(defaultFileName);
         try {
-            FileUtils.copyFile(this.imgFile,virtualFileWrapper.getFile());
+            FileUtils.copyFile(this.umlData.getImgFile(), virtualFileWrapper.getFile());
         } catch (IOException e) {
             e.printStackTrace();
         }
