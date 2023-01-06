@@ -102,6 +102,11 @@ public class UmlDisplay extends DialogWrapper {
         regenerateBtn.addActionListener(
                 e -> {
                     this.frameControlPanel.refreshSelectedFrames();
+                    try {
+                        this.umlData.refresh();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
                     refreshImgDisplay();
                 }
         );
