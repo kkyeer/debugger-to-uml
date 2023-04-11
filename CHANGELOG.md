@@ -2,6 +2,10 @@
 
 # debugger-to-uml Changelog
 
+## [1.0.3]
+### Changed
+- Upgrade max version to 231.*
+
 ## [1.0.2]
 ### Fixed
 - fixed error on MacOS
