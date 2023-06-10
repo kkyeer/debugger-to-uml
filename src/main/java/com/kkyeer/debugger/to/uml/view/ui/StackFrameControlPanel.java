@@ -1,12 +1,15 @@
-package com.kkyeer.debugger.to.uml.ui;
+package com.kkyeer.debugger.to.uml.view.ui;
 
 import com.intellij.debugger.engine.JavaStackFrame;
 import com.intellij.debugger.impl.DebuggerUtilsEx;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBList;
+import com.kkyeer.debugger.to.uml.view.data.UmlData;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 
 /**
@@ -43,7 +46,12 @@ public class StackFrameControlPanel {
                     return new JBLabel(label.toString());
                 }
         );
-        listUI.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        listUI.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        listUI.addListSelectionListener(
+                e -> {
+                    this.umlData.setSelectedFrameIndexes(this.selectionModel.getSelectedIndices());
+                }
+        );
         SFCPSelectionModel selectionModel = new SFCPSelectionModel();
         listUI.setSelectionModel(selectionModel);
         this.selectionModel = selectionModel;
@@ -51,11 +59,8 @@ public class StackFrameControlPanel {
         return panel;
     }
 
-    public void refreshSelectedFrames() {
-        this.umlData.setSelectedFrameIndexes(this.selectionModel.getSelectedIndices());
-    }
-
     private static class SFCPSelectionModel extends DefaultListSelectionModel {
+
     }
 
 

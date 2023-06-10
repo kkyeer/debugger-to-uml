@@ -1,4 +1,4 @@
-package com.kkyeer.debugger.to.uml.ui;
+package com.kkyeer.debugger.to.uml.view.data;
 
 import com.intellij.debugger.engine.JavaStackFrame;
 import com.intellij.debugger.ui.impl.watch.StackFrameDescriptorImpl;
@@ -14,6 +14,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * @Author: kkyeer
@@ -25,7 +27,6 @@ public class UmlData {
     /**
      * svg file
      */
-    @Nonnull
     private File imgFile;
 
     /**
@@ -40,13 +41,24 @@ public class UmlData {
     @Nullable
     private int[] selectedFrameIndexes;
 
+    private List<Consumer<UmlData>> actions = new ArrayList<>();
+
     public UmlData(@Nonnull List<JavaStackFrame> stackFrameList) {
         this.stackFrameList = stackFrameList;
+        int[] allIndex = new int[this.stackFrameList.size()];
+        for (int i = 0; i < this.stackFrameList.size(); i++) {
+            allIndex[i] = i;
+        }
+        this.selectedFrameIndexes = allIndex;
         try {
             this.refresh();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void subscribeChange(Consumer<UmlData> action){
+        this.actions.add(action);
     }
 
     /**
@@ -63,17 +75,20 @@ public class UmlData {
             e.printStackTrace();
             throw e;
         }
-        if (this.imgFile!=null && this.imgFile.exists()) {
+        if (Objects.nonNull(this.imgFile) && this.imgFile.exists()) {
             this.imgFile.delete();
         }
         this.imgFile = svgFile;
+        for (Consumer<UmlData> action : this.actions) {
+            action.accept(this);
+        }
     }
 
     /**
      * clear file and cache
      */
     public void clear(){
-        if (this.imgFile!=null && this.imgFile.exists()) {
+        if (Objects.nonNull(this.imgFile) && this.imgFile.exists()) {
             this.imgFile.deleteOnExit();
         }
     }
@@ -93,8 +108,8 @@ public class UmlData {
         Invocation prevInvocation = null;
         List<JavaStackFrame> selected = new ArrayList<>();
         if (selectedIndexes != null && selectedIndexes.length != 0) {
-            for (int i = 0; i < selectedIndexes.length; i++) {
-                selected.add(items.get(selectedIndexes[i]));
+            for (int selectedIndex : selectedIndexes) {
+                selected.add(items.get(selectedIndex));
             }
         } else {
             selected = items;

@@ -5,8 +5,8 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataKey;
 import com.intellij.xdebugger.impl.frame.XDebuggerFramesList;
-import com.kkyeer.debugger.to.uml.ui.UmlData;
-import com.kkyeer.debugger.to.uml.ui.UmlDisplay;
+import com.kkyeer.debugger.to.uml.view.data.UmlData;
+import com.kkyeer.debugger.to.uml.view.ui.UmlDisplay;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

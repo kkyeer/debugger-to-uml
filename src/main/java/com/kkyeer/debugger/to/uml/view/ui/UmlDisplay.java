@@ -1,4 +1,4 @@
-package com.kkyeer.debugger.to.uml.ui;
+package com.kkyeer.debugger.to.uml.view.ui;
 
 import com.intellij.openapi.fileChooser.FileChooserFactory;
 import com.intellij.openapi.fileChooser.FileSaverDescriptor;
@@ -8,6 +8,7 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.vfs.VirtualFileWrapper;
 import com.intellij.ui.jcef.JBCefApp;
 import com.intellij.ui.jcef.JBCefBrowser;
+import com.kkyeer.debugger.to.uml.view.data.UmlData;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -78,57 +79,16 @@ public class UmlDisplay extends DialogWrapper {
         JComponent component = jbCefBrowser.getComponent();
         panel.add(component, BorderLayout.CENTER);
 
-        JMenuBar menuBar = new JMenuBar();
-        configureMenuBar(menuBar);
+        JMenuBar menuBar = new UmlPluginMenuBar(this.umlData, this.project).getMenuBar();
         panel.add(menuBar, BorderLayout.NORTH);
-
+        this.umlData.subscribeChange(
+                umlData1 -> this.refreshImgDisplay()
+        );
         return panel;
     }
-
-
-
-    public void configureMenuBar(JMenuBar menuBar) {
-        JButton saveBtn = new JButton();
-        saveBtn.setText("Save");
-        saveBtn.setVisible(true);
-        saveBtn.addActionListener(
-                this::configureFileChooser
-        );
-        menuBar.add(saveBtn);
-
-        JButton regenerateBtn = new JButton();
-        regenerateBtn.setText("Regenerate");
-        regenerateBtn.setVisible(true);
-        regenerateBtn.addActionListener(
-                e -> {
-                    this.frameControlPanel.refreshSelectedFrames();
-                    try {
-                        this.umlData.refresh();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                    refreshImgDisplay();
-                }
-        );
-        menuBar.add(regenerateBtn);
-    }
-
 
     private void refreshImgDisplay(){
         this.jbCefBrowser.loadURL("file:///" + this.umlData.getImgFile().getAbsolutePath());
     }
 
-
-    private void configureFileChooser(ActionEvent event) {
-        FileSaverDescriptor fileSaverDescriptor = new FileSaverDescriptor("Export Sequential Diagrams ", "File name:", "svg");
-        FileSaverDialog dialog = FileChooserFactory.getInstance().createSaveFileDialog(fileSaverDescriptor, this.project);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-        String defaultFileName = "Sequence_" + simpleDateFormat.format(new Date());
-        @Nullable VirtualFileWrapper virtualFileWrapper = dialog.save(defaultFileName);
-        try {
-            FileUtils.copyFile(this.umlData.getImgFile(), virtualFileWrapper.getFile());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }
