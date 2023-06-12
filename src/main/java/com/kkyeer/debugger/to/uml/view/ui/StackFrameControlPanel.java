@@ -51,17 +51,17 @@ public class StackFrameControlPanel {
         // StackList
         JBList<JavaStackFrame> listUI = getJavaStackFrameJBList();
         this.listUI = listUI;
+        listUI.setSelectionInterval(0, umlData.getStackFrameList().size() - 1);
         JBScrollPane scrollPane = new JBScrollPane(listUI);
-        // scrollPane.add(listUI);
-        // scrollPane.setSize(100,100);
         panel.add(scrollPane, BorderLayout.CENTER);
         return panel;
     }
 
     private JPanel getPackageFilterPanel() {
         JPanel buttonPane = new JPanel();
-        buttonPane.setLayout(new GridLayout());
-        buttonPane.setSize(100,100);
+        GridLayout gridLayout = new GridLayout();
+        gridLayout.setColumns(3);
+        buttonPane.setLayout(gridLayout);
         List<JComponent> components = extractPackagesFromUmlData(umlData);
         for (JComponent button : components) {
             buttonPane.add(button);
@@ -110,8 +110,13 @@ public class StackFrameControlPanel {
                 if (parts.length > 0) {
                     if (parts.length == 1) {
                         guessedDomain = Optional.of(parts[0]);
-                    }else {
-                        guessedDomain = Optional.of(parts[0] + "." + parts[1]);
+                    } else if (parts.length > 2) {
+                        if ("springframework".equals(parts[1])) {
+                            guessedDomain = Optional.of(parts[0] + "." + parts[1] + "." + parts[2]);
+                        }else {
+                            guessedDomain = Optional.of(parts[0] + "." + parts[1]);
+                        }
+
                     }
                 }
                 if (guessedDomain.isPresent()) {
@@ -129,17 +134,19 @@ public class StackFrameControlPanel {
             List<Integer> indices = buttonToFrameIndices.get(button);
             indices.add(i);
         }else {
-            JButton button = new JButton(packageName);
+            JCheckBox button = new JCheckBox(packageName);
             button.setSelected(true);
             button.setText(packageName);
             this.filterButtonSelected.put(button, true);
 
+
+
             class OnClickMouseListener implements MouseListener {
                 private final StackFrameControlPanel stackFrameControlPanel;
 
-                private final JButton source;
+                private final JComponent source;
 
-                private OnClickMouseListener(StackFrameControlPanel stackFrameControlPanel, JButton button) {
+                private OnClickMouseListener(StackFrameControlPanel stackFrameControlPanel, JComponent button) {
                     this.stackFrameControlPanel = stackFrameControlPanel;
                     this.source = button;
                 }
@@ -150,7 +157,7 @@ public class StackFrameControlPanel {
                     if (selected) {
                     //     deselect action
                         List<Integer> relative = labelToFrameIndices.get(source);
-                        int[] selectedIndices = this.stackFrameControlPanel.listUI.getSelectedIndices();
+                        int[] selectedIndices = this.stackFrameControlPanel.selectionModel.getSelectedIndices();
                         System.out.println(selectedIndices);
                         List<Integer> shouldSelect = new ArrayList<>();
                         for (int j = 0; j < selectedIndices.length; j++) {
@@ -167,7 +174,7 @@ public class StackFrameControlPanel {
                     }else {
                     //     select package
                         List<Integer> relative = labelToFrameIndices.get(source);
-                        int[] selectedIndices = this.stackFrameControlPanel.listUI.getSelectedIndices();
+                        int[] selectedIndices = this.stackFrameControlPanel.selectionModel.getSelectedIndices();
                         System.out.println(selectedIndices);
                         List<Integer> shouldSelect = new ArrayList<>();
                         for (int j = 0; j < selectedIndices.length; j++) {
@@ -182,7 +189,8 @@ public class StackFrameControlPanel {
                         listUI.setSelectedIndices(result);
                     }
                     this.stackFrameControlPanel.filterButtonSelected.put(source, !selected);
-                    this.source.setSelected(!selected);
+                    JCheckBox checkBox = (JCheckBox) this.source;
+                    checkBox.setSelected(!selected);
                 }
 
                 @Override
@@ -236,11 +244,11 @@ public class StackFrameControlPanel {
                     return new JBLabel(label.toString());
                 }
         );
-        int[] allIndices = new int[frames.length];
-        for (int i = 0; i < allIndices.length; i++) {
-            allIndices[i] = i;
-        }
-        listUI.setSelectedIndices(allIndices);
+        // int[] allIndices = new int[frames.length];
+        // for (int i = 0; i < allIndices.length; i++) {
+        //     allIndices[i] = i;
+        // }
+        // listUI.setSelectedIndices(allIndices);
         listUI.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         listUI.addListSelectionListener(
                 e -> {
