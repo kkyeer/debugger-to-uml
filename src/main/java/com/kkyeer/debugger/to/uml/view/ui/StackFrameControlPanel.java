@@ -60,12 +60,15 @@ public class StackFrameControlPanel {
     private JPanel getPackageFilterPanel() {
         JPanel buttonPane = new JPanel();
         GridLayout gridLayout = new GridLayout();
-        gridLayout.setColumns(3);
-        buttonPane.setLayout(gridLayout);
+        int columns = 3;
+        gridLayout.setColumns(columns);
         List<JComponent> components = extractPackagesFromUmlData(umlData);
+        int rows = Double.valueOf((double) Math.ceil(components.size() * 1.0 / columns)).intValue();
+        gridLayout.setRows(rows);
         for (JComponent button : components) {
             buttonPane.add(button);
         }
+        buttonPane.setLayout(gridLayout);
         return buttonPane;
     }
 
