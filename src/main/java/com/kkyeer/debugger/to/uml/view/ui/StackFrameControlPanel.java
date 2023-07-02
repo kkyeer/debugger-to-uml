@@ -3,8 +3,6 @@ package com.kkyeer.debugger.to.uml.view.ui;
 import com.intellij.debugger.engine.JavaStackFrame;
 import com.intellij.debugger.impl.DebuggerUtilsEx;
 import com.intellij.debugger.ui.impl.watch.StackFrameDescriptorImpl;
-import com.intellij.openapi.util.NlsSafe;
-import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBScrollPane;
 import com.kkyeer.debugger.to.uml.view.data.UmlData;
@@ -12,13 +10,14 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -59,6 +58,7 @@ public class StackFrameControlPanel {
 
     private JPanel getPackageFilterPanel() {
         JPanel buttonPane = new JPanel();
+        // buttonPane.add(new JLabel("Package Filter"));
         GridLayout gridLayout = new GridLayout();
         int columns = 3;
         gridLayout.setColumns(columns);
@@ -237,21 +237,8 @@ public class StackFrameControlPanel {
         listUI.setListData(frames);
         listUI.setFixedCellHeight(35);
         listUI.setCellRenderer(
-                (list, stackFrame, index, isSelected, cellHasFocus) -> {
-                    @NlsSafe StringBuilder label = new StringBuilder();
-                    label.append(stackFrame.getDescriptor().getMethod().name())
-                            .append(':').append(DebuggerUtilsEx.getLineNumber(stackFrame.getDescriptor().getLocation(), false))
-                            .append("   [")
-                            .append(stackFrame.getDescriptor().getLocation().declaringType().name())
-                            .append("]");
-                    return new JBLabel(label.toString());
-                }
+                getJavaStackFrameListCellRenderer()
         );
-        // int[] allIndices = new int[frames.length];
-        // for (int i = 0; i < allIndices.length; i++) {
-        //     allIndices[i] = i;
-        // }
-        // listUI.setSelectedIndices(allIndices);
         listUI.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         listUI.addListSelectionListener(
                 e -> {
@@ -262,6 +249,41 @@ public class StackFrameControlPanel {
         listUI.setSelectionModel(selectionModel);
         this.selectionModel = selectionModel;
         return listUI;
+    }
+
+    @NotNull
+    private static ListCellRenderer<JavaStackFrame> getJavaStackFrameListCellRenderer() {
+        return (list, stackFrame, index, isSelected, cellHasFocus) -> {
+            String label = stackFrame.getDescriptor().getMethod().name() +
+                    ':' + DebuggerUtilsEx.getLineNumber(stackFrame.getDescriptor().getLocation(), false) +
+                    "   [" +
+                    stackFrame.getDescriptor().getLocation().declaringType().name() +
+                    "]";
+            JCheckBox checkBox = new JCheckBox(label);
+            checkBox.setSelected(isSelected);
+            if (isSelected) {
+                checkBox.setBackground(new Color(44,44,70));
+            }else {
+                checkBox.setBackground(Color.black);
+            }
+            ActionListener[] actionListeners = checkBox.getActionListeners();
+            System.out.println(actionListeners);
+            return checkBox;
+        };
+    }
+
+    @NotNull
+    private static ListCellRenderer<JavaStackFrame> getJavaStackFrameListCellRenderer2() {
+        return (list, stackFrame, index, isSelected, cellHasFocus) -> {
+            String labelText = stackFrame.getDescriptor().getMethod().name() +
+                    ':' + DebuggerUtilsEx.getLineNumber(stackFrame.getDescriptor().getLocation(), false) +
+                    "   [" +
+                    stackFrame.getDescriptor().getLocation().declaringType().name() +
+                    "]";
+            JLabel lable = new JLabel(labelText);
+            // System.out.println(actionListeners);
+            return lable;
+        };
     }
 
     private static class StackFrameSelectionModel extends DefaultListSelectionModel {
