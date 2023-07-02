@@ -2,6 +2,14 @@
 
 # debugger-to-uml Changelog
 
+
+## [1.0.4]
+### Added
+- add package filter
+- make left pane scrollable
+- make left/right ratio draggable
+- highlight selected stack frame
+
 ## [1.0.3]
 ### Changed
 - Upgrade max version to 231.*

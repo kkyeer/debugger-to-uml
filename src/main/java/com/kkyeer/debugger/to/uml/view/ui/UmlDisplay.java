@@ -67,18 +67,22 @@ public class UmlDisplay extends DialogWrapper {
 
     private JPanel mainPanel(){
         JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout(0, 0));
-        panel.setSize(1000,500);
+        BorderLayout borderLayout = new BorderLayout(0, 0);
+        panel.setLayout(borderLayout);
+        panel.setPreferredSize(new Dimension(1000, 500));
 
-
+        JSplitPane splitPane = new JSplitPane();
+        splitPane.setDividerSize(10);
         StackFrameControlPanel stackFrameControlPanel = new StackFrameControlPanel(this.umlData);
         this.frameControlPanel = stackFrameControlPanel;
-        panel.add(stackFrameControlPanel.getPanel(), BorderLayout.WEST);
+        // panel.add(stackFrameControlPanel.getPanel(), BorderLayout.WEST);
+        splitPane.setLeftComponent(stackFrameControlPanel.getPanel());
 
         this.jbCefBrowser = new JBCefBrowser("file:///" + this.umlData.getImgFile().getAbsolutePath());
         JComponent component = jbCefBrowser.getComponent();
-        panel.add(component, BorderLayout.CENTER);
-
+        // panel.add(component, BorderLayout.CENTER);
+        splitPane.setRightComponent(component);
+        panel.add(splitPane, BorderLayout.CENTER);
         JMenuBar menuBar = new UmlPluginMenuBar(this.umlData, this.project).getMenuBar();
         panel.add(menuBar, BorderLayout.NORTH);
         this.umlData.subscribeChange(

@@ -266,8 +266,6 @@ public class StackFrameControlPanel {
             }else {
                 checkBox.setBackground(Color.black);
             }
-            ActionListener[] actionListeners = checkBox.getActionListeners();
-            System.out.println(actionListeners);
             return checkBox;
         };
     }
