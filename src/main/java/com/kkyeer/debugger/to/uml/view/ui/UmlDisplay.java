@@ -6,6 +6,7 @@ import com.intellij.openapi.fileChooser.FileSaverDialog;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.vfs.VirtualFileWrapper;
+import com.intellij.ui.components.JBSlidingPanel;
 import com.intellij.ui.jcef.JBCefApp;
 import com.intellij.ui.jcef.JBCefBrowser;
 import com.kkyeer.debugger.to.uml.view.data.UmlData;
@@ -13,6 +14,8 @@ import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
@@ -75,19 +78,27 @@ public class UmlDisplay extends DialogWrapper {
         splitPane.setDividerSize(10);
         StackFrameControlPanel stackFrameControlPanel = new StackFrameControlPanel(this.umlData);
         this.frameControlPanel = stackFrameControlPanel;
-        // panel.add(stackFrameControlPanel.getPanel(), BorderLayout.WEST);
         splitPane.setLeftComponent(stackFrameControlPanel.getPanel());
 
         this.jbCefBrowser = new JBCefBrowser("file:///" + this.umlData.getImgFile().getAbsolutePath());
-        JComponent component = jbCefBrowser.getComponent();
-        // panel.add(component, BorderLayout.CENTER);
-        splitPane.setRightComponent(component);
+        JComponent cefBrowserComponent = jbCefBrowser.getComponent();
+        splitPane.setRightComponent(cefBrowserComponent);
         panel.add(splitPane, BorderLayout.CENTER);
         JMenuBar menuBar = new UmlPluginMenuBar(this.umlData, this.project).getMenuBar();
         panel.add(menuBar, BorderLayout.NORTH);
         this.umlData.subscribeChange(
                 umlData1 -> this.refreshImgDisplay()
         );
+        JSlider slider = new JSlider();
+        slider.setMaximum(200);
+        slider.setMinimum(1);
+        slider.addChangeListener(
+                e -> {
+                    JSlider slider1 = (JSlider) e.getSource();
+                    jbCefBrowser.setZoomLevel(slider1.getValue() * 1.0 / 100);
+                }
+        );
+        panel.add(slider, BorderLayout.SOUTH);
         return panel;
     }
 
