@@ -80,16 +80,21 @@ public class UmlDisplay extends DialogWrapper {
         this.frameControlPanel = stackFrameControlPanel;
         splitPane.setLeftComponent(stackFrameControlPanel.getPanel());
 
+        JPanel displayPanel = new JPanel();
+        displayPanel.setLayout(new BorderLayout());
+
         this.jbCefBrowser = new JBCefBrowser("file:///" + this.umlData.getImgFile().getAbsolutePath());
         JComponent cefBrowserComponent = jbCefBrowser.getComponent();
-        splitPane.setRightComponent(cefBrowserComponent);
+        // splitPane.setRightComponent(cefBrowserComponent);
         panel.add(splitPane, BorderLayout.CENTER);
         JMenuBar menuBar = new UmlPluginMenuBar(this.umlData, this.project).getMenuBar();
         panel.add(menuBar, BorderLayout.NORTH);
         this.umlData.subscribeChange(
                 umlData1 -> this.refreshImgDisplay()
         );
+        displayPanel.add(cefBrowserComponent, BorderLayout.CENTER);
         JSlider slider = new JSlider();
+        slider.setToolTipText("scale uml display");
         slider.setMaximum(200);
         slider.setMinimum(1);
         slider.addChangeListener(
@@ -98,7 +103,8 @@ public class UmlDisplay extends DialogWrapper {
                     jbCefBrowser.setZoomLevel(slider1.getValue() * 1.0 / 100);
                 }
         );
-        panel.add(slider, BorderLayout.SOUTH);
+        displayPanel.add(slider, BorderLayout.NORTH);
+        splitPane.setRightComponent(displayPanel);
         return panel;
     }
 

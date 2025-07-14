@@ -18,7 +18,7 @@
 - [x] make left pane scrollable
 - [x] make left/right ratio draggable
 - [x] highlight selected stack frame
-- [ ] make cef scalable
+- [x] make cef scalable
 
 <!-- Plugin description -->
 This plugin allows you to generate sequence diagram uml from Java debugger stack and save it as svg file.
