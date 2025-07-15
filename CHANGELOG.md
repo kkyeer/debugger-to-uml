@@ -4,6 +4,7 @@
 
 ## [1.0.5]
 ### Remove upper version list
+- Remove upper version list
 
 
 ## [1.0.4]
