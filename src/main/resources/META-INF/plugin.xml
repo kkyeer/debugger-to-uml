@@ -3,7 +3,7 @@
     <id>com.github.kkyeer.debugger.to.uml</id>
     <name>Debugger-to-Uml</name>
     <vendor>kkyeer</vendor>
-    <idea-version since-build="213"/>
+    <idea-version since-build="213" until-build=""/>
 
     <description>
         <![CDATA[
